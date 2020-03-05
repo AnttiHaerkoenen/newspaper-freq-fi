@@ -24,7 +24,6 @@ ENV BILLING_ENABLED=${BILLING_ENABLED}
 ENV SHOW_AGREEMENTS=${SHOW_AGREEMENTS}
 ENV DOCS_PREFIX=${DOCS_PREFIX}
 
-# These need to be owned and writable by the root group in OpenShift
 ENV ROOT_GROUP_DIRS='/var/run /var/log/nginx /var/lib/nginx'
 
 RUN yum -y install epel-release &&\
@@ -47,4 +46,4 @@ COPY nginx.conf /etc/nginx
 
 EXPOSE 8080
 
-CMD ["gunicorn", "--config", "main:app"]
+CMD ["gunicorn", "-b", ":8080", "--config", "main:app"]
