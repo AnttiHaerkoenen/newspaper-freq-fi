@@ -45,6 +45,6 @@ RUN pip install --no-cache-dir -r requirements.txt && \
 
 COPY nginx.conf /etc/nginx
 
-EXPOSE 8000
+EXPOSE 8080
 
 CMD ["gunicorn", "--config", "main:app"]
