@@ -16,7 +16,7 @@ keywords = set(freq_lemma_data.columns) - {'year', 'Unnamed: 0'}
 app = dash.Dash(__name__)
 app.title = "Sanomalehdet"
 
-server = app.server
+application = app.server
 
 options = [{'label': k, 'value': k} for k in keywords]
 
