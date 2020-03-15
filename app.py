@@ -1,18 +1,15 @@
-from pathlib import Path
-
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-import dash_table
 from dash.dependencies import Output, Input
 import pandas as pd
 
-data_dir = Path('data')
+data_dir = 'https://raw.githubusercontent.com/AnttiHaerkoenen/grand_duchy/master/data/processed/'
 
-freq_lemma_data = pd.read_csv(data_dir / 'frequencies_FI_newspapers_lemma.csv')
-freg_lemma_data_abs = pd.read_csv(data_dir / 'frequencies_FI_newspapers_lemma_abs.csv')
-freq_regex_data = pd.read_csv(data_dir / 'frequencies_FI_newspapers_regex.csv')
-freg_regex_data_abs = pd.read_csv(data_dir / 'frequencies_FI_newspapers_regex_abs.csv')
+freq_lemma_data = pd.read_csv(data_dir + 'frequencies_FI_newspapers_lemma.csv')
+freg_lemma_data_abs = pd.read_csv(data_dir + 'frequencies_FI_newspapers_lemma_abs.csv')
+freq_regex_data = pd.read_csv(data_dir + 'frequencies_FI_newspapers_regex.csv')
+freg_regex_data_abs = pd.read_csv(data_dir + 'frequencies_FI_newspapers_regex_abs.csv')
 
 keywords = set(freq_lemma_data.columns) - {'year', 'Unnamed: 0'}
 
