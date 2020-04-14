@@ -4,7 +4,7 @@ import dash_html_components as html
 from dash.dependencies import Output, Input
 import pandas as pd
 
-VERSION = 1.0
+VERSION = 2020.0
 data_dir = 'https://raw.githubusercontent.com/AnttiHaerkoenen/grand_duchy/master/data/processed/'
 
 freq_lemma_data = pd.read_csv(data_dir + 'frequencies_FI_newspapers_lemma.csv')
