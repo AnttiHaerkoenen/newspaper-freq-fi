@@ -4,6 +4,7 @@ import dash_html_components as html
 from dash.dependencies import Output, Input
 import pandas as pd
 
+VERSION = 1.0
 data_dir = 'https://raw.githubusercontent.com/AnttiHaerkoenen/grand_duchy/master/data/processed/'
 
 freq_lemma_data = pd.read_csv(data_dir + 'frequencies_FI_newspapers_lemma.csv')
@@ -13,14 +14,17 @@ freg_regex_data_abs = pd.read_csv(data_dir + 'frequencies_FI_newspapers_regex_ab
 
 keywords = set(freq_lemma_data.columns) - {'year', 'Unnamed: 0'}
 
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__)
-app.title = "Sanomalehdet"
+app.title = "Finnish newspapers"
 
 application = app.server
 
 options = [{'label': k, 'value': k} for k in keywords]
 
 app.layout = html.Div(children=[
+    html.H1(children=f'{app.title}'),
+
     html.H2(children='Keyword'),
 
     html.Div([
@@ -58,6 +62,13 @@ app.layout = html.Div(children=[
     ]),
 
     dcc.Graph(id='bar-plot'),
+
+    html.P(
+        children=f"Version {VERSION}",
+        style={
+            'font-style': 'italic'
+        },
+    ),
 ])
 
 
@@ -95,4 +106,8 @@ def update_graph(
 
 
 if __name__ == '__main__':
-    app.run_server(port=8080, host='0.0.0.0', debug=True)
+    app.run_server(
+        port=8080,
+        host='0.0.0.0',
+        debug=True,
+    )
