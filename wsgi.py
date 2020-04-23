@@ -12,7 +12,7 @@ freg_lemma_data_abs = pd.read_csv(data_dir + 'frequencies_FI_newspapers_lemma_ab
 freq_regex_data = pd.read_csv(data_dir + 'frequencies_FI_newspapers_regex.csv')
 freg_regex_data_abs = pd.read_csv(data_dir + 'frequencies_FI_newspapers_regex_abs.csv')
 
-keywords = set(freq_lemma_data.columns) - {'year', 'Unnamed: 0'}
+keywords = sorted(set(freq_lemma_data.columns) - {'year', 'Unnamed: 0'})
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__)
@@ -108,6 +108,6 @@ def update_graph(
 if __name__ == '__main__':
     app.run_server(
         port=8080,
-        host='0.0.0.0',
+        # host='0.0.0.0',
         debug=True,
     )
