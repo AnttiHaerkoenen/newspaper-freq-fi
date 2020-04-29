@@ -4,7 +4,7 @@ import dash_html_components as html
 from dash.dependencies import Output, Input
 import pandas as pd
 
-VERSION = 2020.0
+VERSION = 2020.1
 data_dir = 'https://raw.githubusercontent.com/AnttiHaerkoenen/grand_duchy/master/data/processed/'
 
 freq_lemma_data = pd.read_csv(data_dir + 'frequencies_FI_newspapers_lemma.csv')
@@ -108,6 +108,6 @@ def update_graph(
 if __name__ == '__main__':
     app.run_server(
         port=8080,
-        # host='0.0.0.0',
+        host='0.0.0.0',
         debug=True,
     )
