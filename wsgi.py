@@ -8,12 +8,12 @@ VERSION = 2020.1
 data_dir = 'https://raw.githubusercontent.com/AnttiHaerkoenen/' \
            'grand_duchy/master/data/processed/frequencies_fi_newspapers/'
 
-freq_lemma_data = pd.read_csv(data_dir + 'lemma_rel.csv')
+freq_lemma_data_rel = pd.read_csv(data_dir + 'lemma_rel.csv')
 freg_lemma_data_abs = pd.read_csv(data_dir + 'lemma_abs.csv')
-freq_regex_data = pd.read_csv(data_dir + 'regex_rel.csv')
+freq_regex_data_rel = pd.read_csv(data_dir + 'regex_rel.csv')
 freg_regex_data_abs = pd.read_csv(data_dir + 'regex_abs.csv')
 
-keywords = sorted(set(freq_lemma_data.columns) - {'year', 'Unnamed: 0'})
+keywords = sorted(set(freq_lemma_data_rel.columns) - {'year', 'Unnamed: 0'})
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__)
@@ -87,11 +87,11 @@ def update_graph(
     if abs_or_rel == 'absolute' and lemma_or_regex == 'lemma':
         data = freg_lemma_data_abs
     elif abs_or_rel == 'relative' and lemma_or_regex == 'lemma':
-        data = freq_lemma_data
+        data = freq_lemma_data_rel
     elif abs_or_rel == 'absolute' and lemma_or_regex == 'regex':
         data = freg_regex_data_abs
     else:
-        data = freq_regex_data
+        data = freq_regex_data_rel
 
     x = data['year']
     y = data[keyword]
