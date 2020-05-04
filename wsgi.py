@@ -5,12 +5,13 @@ from dash.dependencies import Output, Input
 import pandas as pd
 
 VERSION = 2020.1
-data_dir = 'https://raw.githubusercontent.com/AnttiHaerkoenen/grand_duchy/master/data/processed/'
+data_dir = 'https://raw.githubusercontent.com/AnttiHaerkoenen/' \
+           'grand_duchy/master/data/processed/frequencies_fi_newspapers/'
 
-freq_lemma_data = pd.read_csv(data_dir + 'frequencies_FI_newspapers_lemma.csv')
-freg_lemma_data_abs = pd.read_csv(data_dir + 'frequencies_FI_newspapers_lemma_abs.csv')
-freq_regex_data = pd.read_csv(data_dir + 'frequencies_FI_newspapers_regex.csv')
-freg_regex_data_abs = pd.read_csv(data_dir + 'frequencies_FI_newspapers_regex_abs.csv')
+freq_lemma_data = pd.read_csv(data_dir + 'lemma_rel.csv')
+freg_lemma_data_abs = pd.read_csv(data_dir + 'lemma_abs.csv')
+freq_regex_data = pd.read_csv(data_dir + 'regex_rel.csv')
+freg_regex_data_abs = pd.read_csv(data_dir + 'regex_abs.csv')
 
 keywords = sorted(set(freq_lemma_data.columns) - {'year', 'Unnamed: 0'})
 
