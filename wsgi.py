@@ -1,4 +1,5 @@
 import os
+from functools import lru_cache
 
 import dash
 import dash_core_components as dcc
@@ -11,16 +12,42 @@ from sqlalchemy import create_engine
 
 
 VERSION = 2020.2
-data_dir = 'https://raw.githubusercontent.com/AnttiHaerkoenen/' \
+PAGE_SIZE = 10
+BASE_URL = 'https://digi.kansalliskirjasto.fi/'
+DATA_DIR = 'https://raw.githubusercontent.com/AnttiHaerkoenen/' \
            'grand_duchy/master/data/processed/frequencies_fi_newspapers/'
-sql_engine = create_engine(os.environ['database_url'])
+DATABASE_URL = ''
 
-freq_lemma_data_rel = pd.read_csv(data_dir + 'lemma_rel.csv')
-freg_lemma_data_abs = pd.read_csv(data_dir + 'lemma_abs.csv')
-freq_regex_data_rel = pd.read_csv(data_dir + 'regex_rel.csv')
-freg_regex_data_abs = pd.read_csv(data_dir + 'regex_abs.csv')
+sql_engine = create_engine(DATABASE_URL)
+
+freq_lemma_data_rel = pd.read_csv(DATA_DIR + 'lemma_rel.csv')
+freg_lemma_data_abs = pd.read_csv(DATA_DIR + 'lemma_abs.csv')
+freq_regex_data_rel = pd.read_csv(DATA_DIR + 'regex_rel.csv')
+freg_regex_data_abs = pd.read_csv(DATA_DIR + 'regex_abs.csv')
 
 keywords = sorted(set(freq_lemma_data_rel.columns) - {'year', 'Unnamed: 0'})
+
+
+@lru_cache(maxsize=32)
+def query_kwics(
+        keyword,
+        years,
+):
+    sql_query = f"SELECT * FROM kwic_fi_newspapers WHERE term = '{keyword}'"
+
+    if len(years) == 1:
+        sql_query += f" AND year = {years[0]}"
+    elif len(years) > 1:
+        sql_query += f" AND year IN {years}"
+
+    df = pd.read_sql(
+        sql_query,
+        con=sql_engine,
+    )
+    df['url'] = [BASE_URL + url for url in df.url]
+
+    return df
+
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__)
@@ -75,9 +102,22 @@ app.layout = html.Div(children=[
         html.H2(children='Keywords in context'),
         dash_table.DataTable(
             id='kwic-table',
-            # columns=[
-            #     {'name': col.capitalize(), 'id': col} for col in ['context', 'file']
-            # ],
+            columns=[
+                {'name': col.capitalize(), 'id': col}
+                for col
+                in ['publication', 'year', 'context']
+            ] + [{
+                'name': 'Link',
+                'id': 'link',
+                'type': 'text',
+                'presentation': 'markdown',
+            }],
+            style_cell_conditional=[
+                {'if': {'column_id': 'publication'}, 'width': '10%'},
+                {'if': {'column_id': 'year'}, 'width': '5%'},
+                {'if': {'column_id': 'context'}, 'width': '50%'},
+            ],
+            page_size=PAGE_SIZE,
             style_data={
                 'whiteSpace': 'normal',
                 'height': 'auto',
@@ -85,7 +125,11 @@ app.layout = html.Div(children=[
             },
             style_header={
                 'text-align': 'left',
-            }
+            },
+            export_format='xlsx',
+            row_deletable=True,
+            sort_action='native',
+            filter_action='native',
         ),
     ]),
 
@@ -134,12 +178,10 @@ def update_graph(
 @app.callback(
     Output('kwic-table', 'data'),
     [Input('keyword-picker', 'value'),
-     Input('lemma-picker', 'value'),
      Input('bar-plot', 'selectedData')]
 )
 def update_table(
         keyword,
-        lemma_or_regex,
         selection,
 ):
     if not keyword:
@@ -150,17 +192,16 @@ def update_table(
     else:
         points = selection.get('points', [])
 
-    years = [point['x'] for point in points]
+    years = tuple(point['x'] for point in points)
 
-    sql_query = f"SELECT * FROM kwic_fi_newspapers WHERE term = {keyword} AND {lemma_or_regex} = true"
-
-    if years:
-        sql_query += f" AND year IN ({', '.join(years)})"
-
-    data = pd.read_sql(
-        sql_query,
-        con=sql_engine,
+    data = query_kwics(
+        keyword=keyword,
+        years=years,
     )
+    data['link'] = [
+        f"[{url}]({url})"
+        for url in data['url']
+    ]
 
     return data.to_dict('records')
 
@@ -168,6 +209,6 @@ def update_table(
 if __name__ == '__main__':
     app.run_server(
         port=8080,
-        host='0.0.0.0',
+        # host='0.0.0.0',
         debug=True,
     )
