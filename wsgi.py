@@ -1,12 +1,19 @@
+import os
+
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+import dash_table
 from dash.dependencies import Output, Input
+from dash.exceptions import PreventUpdate
 import pandas as pd
+from sqlalchemy import create_engine
 
-VERSION = 2020.1
+
+VERSION = 2020.2
 data_dir = 'https://raw.githubusercontent.com/AnttiHaerkoenen/' \
            'grand_duchy/master/data/processed/frequencies_fi_newspapers/'
+sql_engine = create_engine(os.environ['database_url'])
 
 freq_lemma_data_rel = pd.read_csv(data_dir + 'lemma_rel.csv')
 freg_lemma_data_abs = pd.read_csv(data_dir + 'lemma_abs.csv')
@@ -64,6 +71,24 @@ app.layout = html.Div(children=[
 
     dcc.Graph(id='bar-plot'),
 
+    html.Div([
+        html.H2(children='Keywords in context'),
+        dash_table.DataTable(
+            id='kwic-table',
+            # columns=[
+            #     {'name': col.capitalize(), 'id': col} for col in ['context', 'file']
+            # ],
+            style_data={
+                'whiteSpace': 'normal',
+                'height': 'auto',
+                'text-align': 'left',
+            },
+            style_header={
+                'text-align': 'left',
+            }
+        ),
+    ]),
+
     html.P(
         children=f"Version {VERSION}",
         style={
@@ -106,9 +131,43 @@ def update_graph(
     }
 
 
+@app.callback(
+    Output('kwic-table', 'data'),
+    [Input('keyword-picker', 'value'),
+     Input('lemma-picker', 'value'),
+     Input('bar-plot', 'selectedData')]
+)
+def update_table(
+        keyword,
+        lemma_or_regex,
+        selection,
+):
+    if not keyword:
+        raise PreventUpdate
+
+    if selection is None:
+        points = []
+    else:
+        points = selection.get('points', [])
+
+    years = [point['x'] for point in points]
+
+    sql_query = f"SELECT * FROM kwic_fi_newspapers WHERE term = {keyword} AND {lemma_or_regex} = true"
+
+    if years:
+        sql_query += f" AND year IN ({', '.join(years)})"
+
+    data = pd.read_sql(
+        sql_query,
+        con=sql_engine,
+    )
+
+    return data.to_dict('records')
+
+
 if __name__ == '__main__':
     app.run_server(
         port=8080,
-        host='0.0.0.0',
+        # host='0.0.0.0',
         debug=True,
     )
