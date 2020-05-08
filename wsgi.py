@@ -16,9 +16,13 @@ PAGE_SIZE = 10
 BASE_URL = 'https://digi.kansalliskirjasto.fi/'
 DATA_DIR = 'https://raw.githubusercontent.com/AnttiHaerkoenen/' \
            'grand_duchy/master/data/processed/frequencies_fi_newspapers/'
-DATABASE_URL = str(os.environ.get('database_url'))
 
-sql_engine = create_engine(DATABASE_URL)
+DATABASE_URL = os.environ.get('database_url')
+
+if DATABASE_URL:
+    sql_engine = create_engine(DATABASE_URL)
+else:
+    sql_engine = None
 
 freq_lemma_data_rel = pd.read_csv(DATA_DIR + 'lemma_rel.csv')
 freg_lemma_data_abs = pd.read_csv(DATA_DIR + 'lemma_abs.csv')
@@ -184,7 +188,7 @@ def update_table(
         keyword,
         selection,
 ):
-    if not keyword:
+    if not keyword or not sql_engine:
         raise PreventUpdate
 
     if selection is None:
