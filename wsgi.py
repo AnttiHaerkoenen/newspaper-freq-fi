@@ -103,15 +103,15 @@ app.layout = html.Div(children=[
         dash_table.DataTable(
             id='kwic-table',
             columns=[
-                {'name': col.capitalize(), 'id': col}
+                {
+                    'name': col.capitalize(),
+                    'id': col,
+                    'type': 'text',
+                    'presentation': 'markdown',
+                }
                 for col
-                in ['publication', 'year', 'context']
-            ] + [{
-                'name': 'Link',
-                'id': 'link',
-                'type': 'text',
-                'presentation': 'markdown',
-            }],
+                in ['publication', 'year', 'context', 'link']
+            ],
             style_cell_conditional=[
                 {'if': {'column_id': 'publication'}, 'width': '10%'},
                 {'if': {'column_id': 'year'}, 'width': '5%'},
