@@ -11,7 +11,7 @@ import pandas as pd
 from sqlalchemy import create_engine
 
 
-VERSION = 2020.2
+VERSION = '2020.2.1'
 PAGE_SIZE = 10
 BASE_URL = 'https://digi.kansalliskirjasto.fi/'
 DATA_DIR = 'https://raw.githubusercontent.com/AnttiHaerkoenen/' \
@@ -100,7 +100,11 @@ app.layout = html.Div(children=[
         ),
     ]),
 
-    dcc.Graph(id='bar-plot'),
+    html.Div([
+        html.H2(children='Frequency plot'),
+        dcc.Graph(id='bar-plot'),
+    ]),
+
 
     html.Div([
         html.H2(children='Keywords in context'),
