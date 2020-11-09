@@ -1,7 +1,7 @@
 Brotli==1.0.9
 brotlipy==0.7.0
-certifi==2020.6.20
-cffi @ file:///tmp/build/80754af9/cffi_1600699146221/work
+certifi==2020.11.8
+cffi==1.14.3
 click==7.1.2
 dash==1.17.0
 dash-core-components==1.13.0
@@ -11,7 +11,7 @@ dash-table==4.11.0
 Flask==1.1.2
 Flask-Compress==1.8.0
 future==0.18.2
-gunicorn @ file:///home/conda/feedstock_root/build_artifacts/gunicorn_1602243009123/work
+gunicorn==20.0.4
 itsdangerous==1.1.0
 Jinja2==2.11.2
 MarkupSafe==1.1.1
@@ -20,12 +20,12 @@ mkl-random==1.1.1
 mkl-service==2.3.0
 numpy==1.19.4
 pandas==1.1.4
-plotly @ file:///home/conda/feedstock_root/build_artifacts/plotly_1603467793398/work
-psycopg2 @ file:///tmp/build/80754af9/psycopg2_1594305108220/work
-pycparser @ file:///tmp/build/80754af9/pycparser_1594388511720/work
+plotly==4.12.0
+psycopg2==2.8.6
+pycparser==2.20
 python-dateutil==2.8.1
 pytz==2020.4
 retrying==1.3.3
-six==1.14.0
-SQLAlchemy==1.3.16
+six==1.15.0
+SQLAlchemy==1.3.20
 Werkzeug==1.0.1
