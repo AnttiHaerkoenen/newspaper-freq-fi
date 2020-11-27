@@ -106,7 +106,14 @@ app.layout = html.Div(children=[
             id='bar-plot',
             config={
                 'modeBarButtonsToRemove': [
+                    'sendDataToCloud',
+                    'lasso2d',
                     'zoom2d',
+                    'zoomIn2d',
+                    'zoomOut2d',
+                    'pan2d',
+                    'autoScale2d',
+                    'resetScale2d',
                 ]
             },
         ),
