@@ -102,7 +102,14 @@ app.layout = html.Div(children=[
 
     html.Div([
         html.H2(children='Frequency plot'),
-        dcc.Graph(id='bar-plot'),
+        dcc.Graph(
+            id='bar-plot',
+            config={
+                'modeBarButtonsToRemove': [
+                    'zoom2d',
+                ]
+            },
+        ),
     ]),
 
 
